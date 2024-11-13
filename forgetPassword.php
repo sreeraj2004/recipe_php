@@ -255,7 +255,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <?php if ($success_message && $button == 'change') echo "<p class='success-message'>$success_message</p>"; ?>
             <?php if ($error_message && $button == 'change') echo "<p class='error-message'>$error_message</p>"; ?>
         </form>
-        <button class="navigation-btn" onclick="window.location.href='login.html'">Go to Login</button>
+        <button class="navigation-btn" onclick="window.location.href='login1.php'">Go to Login</button>
     </div>
 </div>
 
