@@ -1,9 +1,0 @@
-#RewriteEngine On
-#RewriteBase /
-
-# If the requested file or directory exists, do nothing
-#RewriteCond %{REQUEST_FILENAME} !-f
-#RewriteCond %{REQUEST_FILENAME} !-d
-
-# Otherwise, route all requests to index.php
-#RewriteRule ^(.*)$ index.php [QSA,L]
