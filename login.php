@@ -49,7 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         $validationError = validate_input($name, $email, $pass);
         if ($validationError) {
-            header("Location: login.html?signup_error=" . urlencode($validationError));
+            header("Location: login1.php?signup_error=" . urlencode($validationError));
             exit;
         }
 
@@ -63,16 +63,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $result = $stmt->get_result();
 
         if ($result->num_rows > 0) {
-            header("Location: login.html?signup_error=" . urlencode("Email already exists."));
+            header("Location: login1.php?signup_error=" . urlencode("Email already exists."));
         } else {
             $signupQuery = "INSERT INTO login (name, email, password, date) VALUES (?, ?, ?, current_timestamp())";
             $stmt = $mysqli->prepare($signupQuery);
             $stmt->bind_param("sss", $name, $email, $plainPassword);
 
             if ($stmt->execute()) {
-                header("Location: login.html?signup_success=1");
+                header("Location: login1.php?signup_success=1");
             } else {
-                header("Location: login.html?signup_error=" . urlencode("Sign-up failed. Try again later."));
+                header("Location: login1.php?signup_error=" . urlencode("Sign-up failed. Try again later."));
             }
         }
         $stmt->close();
@@ -95,10 +95,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $_SESSION['email'] = $row['email']; // Store email for dropdown display
                 header("Location: index.php");
             } else {
-                header("Location: login.html?signin_error=" . urlencode("Incorrect password."));
+                header("Location: login1.php?signin_error=" . urlencode("Incorrect password."));
             }
         } else {
-            header("Location: login.html?signin_error=" . urlencode("No account found with that email."));
+            header("Location: login1.php?signin_error=" . urlencode("No account found with that email."));
         }
         $stmt->close();
     }
