@@ -66,7 +66,7 @@ if (mysqli_num_rows($result) == 0) {
     if (mysqli_stmt_affected_rows($stmt) > 0) {
         $_SESSION['user'] = $name;
         $_SESSION['email'] = $email;
-        header("Location: http://localhost/project/home.php");
+        header("Location: index.php");
         exit;
     } else {
         echo "Error inserting user: " . mysqli_error($conc);
@@ -76,7 +76,7 @@ if (mysqli_num_rows($result) == 0) {
     $row = mysqli_fetch_assoc($result);
     $_SESSION['user'] = $row['name'];
     $_SESSION['email'] = $row['email'];
-    header("Location: http://localhost/project/home.php");
+    header("Location: index.php");
     exit;
 }
 

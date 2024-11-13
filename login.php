@@ -76,7 +76,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             if ($pass === $row['password']) {
                 $_SESSION['user'] = $row['name'];
                 $_SESSION['email'] = $row['email']; // store email for dropdown display
-                header("Location: home.php");
+                header("Location: index.php");
             } else {
                 header("Location: login.html?signin_error=" . urlencode("Incorrect password."));
             }
