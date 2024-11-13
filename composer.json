@@ -1,6 +1,4 @@
 {
-    "name": "recipe-platform",
-    "description": "A simple PHP application",
     "require": {
         "google/apiclient": "^2.18",
         "phpmailer/phpmailer": "^6.9",
