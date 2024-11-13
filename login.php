@@ -1,5 +1,12 @@
 <?php
 session_start();
+require __DIR__ . '/vendor/autoload.php';
+
+use Dotenv\Dotenv;
+
+// Load .env variables
+$dotenv = Dotenv::createImmutable(__DIR__);
+$dotenv->load();
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $button = $_POST['login-btn'];
@@ -7,27 +14,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Aiven MySQL credentials
     $username = $_ENV['username'];
     $server = $_ENV['server'];
-    $password = $_ENV['password'];  // Replace with actual password
+    $password = $_ENV['password'];
     $dbname = $_ENV['dbname'];
     $port = $_ENV['port'];
 
     // Create MySQL connection with SSL
-    $mysqli = new mysqli(
-        $host, 
-        $username, 
-        $password, 
-        $database, 
-        $port
-    );
+    $mysqli = new mysqli($server, $username, $password, $dbname, $port);
 
-    // Check connection
     if ($mysqli->connect_error) {
         die("Connection failed: " . $mysqli->connect_error);
     }
 
     // Set SSL if required (adjust the path to your certificate)
     $mysqli->ssl_set(NULL, NULL, "/path/to/ca-cert.pem", NULL, NULL);
-    $mysqli->real_connect($host, $username, $password, $database, $port, NULL, MYSQLI_CLIENT_SSL);
+    $mysqli->real_connect($server, $username, $password, $dbname, $port, NULL, MYSQLI_CLIENT_SSL);
 
     function validate_input($name, $email, $password) {
         if (!preg_match("/^[a-zA-Z-' ]*$/", $name)) {
@@ -53,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             exit;
         }
 
-        // Directly store the plain password
+        // Plain password handling
         $plainPassword = $pass;
 
         $checkEmailQuery = "SELECT * FROM login WHERE email = ?";
@@ -67,7 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         } else {
             $signupQuery = "INSERT INTO login (name, email, password, date) VALUES (?, ?, ?, current_timestamp())";
             $stmt = $mysqli->prepare($signupQuery);
-            $stmt->bind_param("sss", $name, $email, $plainPassword); 
+            $stmt->bind_param("sss", $name, $email, $plainPassword);
 
             if ($stmt->execute()) {
                 header("Location: login.html?signup_success=1");
@@ -89,7 +89,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if ($result->num_rows > 0) {
             $row = $result->fetch_assoc();
 
-            // Compare the plain password directly
+            // Direct comparison of plain password
             if ($pass === $row['password']) {
                 $_SESSION['user'] = $row['name'];
                 $_SESSION['email'] = $row['email']; // Store email for dropdown display

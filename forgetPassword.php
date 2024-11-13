@@ -1,16 +1,24 @@
 <?php
 // Start session to store email temporarily
 session_start();
+require __DIR__ . '/vendor/autoload.php';
+
+use Dotenv\Dotenv;
+
+// Load .env variables
+$dotenv = Dotenv::createImmutable(__DIR__);
+$dotenv->load();
+
 
 // Database connection
-$server = "mysql-32792ed8-sreerajmutha-01b8.d.aivencloud.com";
-$username = "avnadmin";
-$password = "AVNS_4NXT9Kevg9jAQuVubwG";  // Replace with actual password
-$database = "defaultdb";
-$port = 20576;
+$username = $_ENV['username'];
+$server = $_ENV['server'];
+$password = $_ENV['password'];  // Replace with actual password
+$dbname = $_ENV['dbname'];
+$port = $_ENV['port'];
 
 // Create connection with the updated database details
-$conc = mysqli_connect($server, $username, $password, $database, $port);
+$conc = mysqli_connect($server, $username, $password, $dbname, $port);
 
 $success_message = $error_message = ""; // Message variables
 
