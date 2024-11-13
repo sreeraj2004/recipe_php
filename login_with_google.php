@@ -9,17 +9,17 @@ $dotenv = Dotenv::createImmutable(__DIR__);
 $dotenv->load();
 
 // Database credentials
-$username = "root";
-$server = "localhost";
-$password = "";
-$dbname = "project";
+$username = "avnadmin";
+$server = "mysql-32792ed8-sreerajmutha-01b8.d.aivencloud.com";
+$password = "AVNS_4NXT9Kevg9jAQuVubwG";  // Replace with actual password
+$dbname = "defaultdb";
+$port = 20576;
 
 // Create database connection
-$conc = mysqli_connect($server, $username, $password, $dbname);
+$conc = mysqli_connect($server, $username, $password, $dbname, $port);
 if (!$conc) {
     die("Connection failed: " . mysqli_connect_error());
 }
-
 
 // Set up Google Client
 $client = new Google\Client();
@@ -28,8 +28,6 @@ $client->setClientSecret($_ENV['GOOGLE_CLIENT_SECRET'] ?? null);
 $client->setRedirectUri("http://localhost/project/login_with_google.php"); 
 $client->addScope("email");
 $client->addScope("profile");
-
-
 
 if (!isset($_GET['code'])) {
     $loginUrl = $client->createAuthUrl();
@@ -80,7 +78,5 @@ if (mysqli_num_rows($result) == 0) {
     exit;
 }
 
-
 mysqli_close($conc);
 ?>
-

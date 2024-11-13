@@ -3,16 +3,31 @@ session_start();
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $button = $_POST['login-btn'];
-    $username = "ub38owlpgxfekdsx";
-    $password = "q6csz92u28yqjycb";
-    $host = "irkm0xtlo2pcmvvz.chr7pe7iynqr.eu-west-1.rds.amazonaws.com";
-    $database = "project";
 
-    $conn = new mysqli($host, $username, $password, $database);
+    // Aiven MySQL credentials
+    $host = "mysql-32792ed8-sreerajmutha-01b8.d.aivencloud.com";
+    $port = 20576;
+    $username = "avnadmin";
+    $password = "AVNS_4NXT9Kevg9jAQuVubwG";  // Replace with actual password
+    $database = "defaultdb";
 
-    if ($conn->connect_error) {
-        die("Connection failed: " . $conn->connect_error);
+    // Create MySQL connection with SSL
+    $mysqli = new mysqli(
+        $host, 
+        $username, 
+        $password, 
+        $database, 
+        $port
+    );
+
+    // Check connection
+    if ($mysqli->connect_error) {
+        die("Connection failed: " . $mysqli->connect_error);
     }
+
+    // Set SSL if required (adjust the path to your certificate)
+    $mysqli->ssl_set(NULL, NULL, "/path/to/ca-cert.pem", NULL, NULL);
+    $mysqli->real_connect($host, $username, $password, $database, $port, NULL, MYSQLI_CLIENT_SSL);
 
     function validate_input($name, $email, $password) {
         if (!preg_match("/^[a-zA-Z-' ]*$/", $name)) {
@@ -21,8 +36,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             return "Invalid email format.";
         }
-        if (!preg_match("/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/", $password)) {
-            return "Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, one number, and one special character.";
+        if (strlen($password) < 8) {
+            return "Password must be at least 8 characters long.";
         }
         return "";
     }
@@ -38,10 +53,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             exit;
         }
 
-        $passPlain = $pass; 
+        // Directly store the plain password
+        $plainPassword = $pass;
 
         $checkEmailQuery = "SELECT * FROM login WHERE email = ?";
-        $stmt = $conn->prepare($checkEmailQuery);
+        $stmt = $mysqli->prepare($checkEmailQuery);
         $stmt->bind_param("s", $email);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -50,8 +66,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             header("Location: login.html?signup_error=" . urlencode("Email already exists."));
         } else {
             $signupQuery = "INSERT INTO login (name, email, password, date) VALUES (?, ?, ?, current_timestamp())";
-            $stmt = $conn->prepare($signupQuery);
-            $stmt->bind_param("sss", $name, $email, $passPlain); 
+            $stmt = $mysqli->prepare($signupQuery);
+            $stmt->bind_param("sss", $name, $email, $plainPassword); 
 
             if ($stmt->execute()) {
                 header("Location: login.html?signup_success=1");
@@ -65,7 +81,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $pass = $_POST['signinpassword'];
 
         $signinQuery = "SELECT * FROM login WHERE email = ?";
-        $stmt = $conn->prepare($signinQuery);
+        $stmt = $mysqli->prepare($signinQuery);
         $stmt->bind_param("s", $email);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -73,9 +89,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if ($result->num_rows > 0) {
             $row = $result->fetch_assoc();
 
+            // Compare the plain password directly
             if ($pass === $row['password']) {
                 $_SESSION['user'] = $row['name'];
-                $_SESSION['email'] = $row['email']; // store email for dropdown display
+                $_SESSION['email'] = $row['email']; // Store email for dropdown display
                 header("Location: index.php");
             } else {
                 header("Location: login.html?signin_error=" . urlencode("Incorrect password."));
@@ -85,6 +102,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
         $stmt->close();
     }
-    $conn->close();
+    $mysqli->close();
 }
 ?>

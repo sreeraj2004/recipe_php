@@ -3,12 +3,14 @@
 session_start();
 
 // Database connection
-$server = "localhost";
-$username = "root";
-$password = "";
-$database = "project";
+$server = "mysql-32792ed8-sreerajmutha-01b8.d.aivencloud.com";
+$username = "avnadmin";
+$password = "AVNS_4NXT9Kevg9jAQuVubwG";  // Replace with actual password
+$database = "defaultdb";
+$port = 20576;
 
-$conc = mysqli_connect($server, $username, $password, $database);
+// Create connection with the updated database details
+$conc = mysqli_connect($server, $username, $password, $database, $port);
 
 $success_message = $error_message = ""; // Message variables
 
