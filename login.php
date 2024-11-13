@@ -1,7 +1,7 @@
 <?php
-session_start();
-require __DIR__ . '/vendor/autoload.php';
+session_start(); // Ensure this is at the top
 
+require __DIR__ . '/vendor/autoload.php';
 use Dotenv\Dotenv;
 
 // Load .env variables
@@ -18,17 +18,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $dbname = $_ENV['dbname'];
     $port = $_ENV['port'];
 
-    // Create MySQL connection with SSL
+    // Create MySQL connection without SSL for simplicity
     $mysqli = new mysqli($server, $username, $password, $dbname, $port);
 
+    // Check for connection errors
     if ($mysqli->connect_error) {
         die("Connection failed: " . $mysqli->connect_error);
     }
 
-    // Set SSL if required (adjust the path to your certificate)
-    $mysqli->ssl_set(NULL, NULL, "/path/to/ca-cert.pem", NULL, NULL);
-    $mysqli->real_connect($server, $username, $password, $dbname, $port, NULL, MYSQLI_CLIENT_SSL);
-
+    // Function to validate input
     function validate_input($name, $email, $password) {
         if (!preg_match("/^[a-zA-Z-' ]*$/", $name)) {
             return "Only letters and whitespace allowed in name.";
@@ -47,15 +45,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $name = $_POST['signupname'];
         $pass = $_POST['signuppassword'];
 
+        // Validate input
         $validationError = validate_input($name, $email, $pass);
         if ($validationError) {
             header("Location: login1.php?signup_error=" . urlencode($validationError));
             exit;
         }
 
-        // Plain password handling
-        $plainPassword = $pass;
-
+        // Check if email already exists
         $checkEmailQuery = "SELECT * FROM login WHERE email = ?";
         $stmt = $mysqli->prepare($checkEmailQuery);
         $stmt->bind_param("s", $email);
@@ -65,9 +62,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if ($result->num_rows > 0) {
             header("Location: login1.php?signup_error=" . urlencode("Email already exists."));
         } else {
+            // Insert new user
             $signupQuery = "INSERT INTO login (name, email, password, date) VALUES (?, ?, ?, current_timestamp())";
             $stmt = $mysqli->prepare($signupQuery);
-            $stmt->bind_param("sss", $name, $email, $plainPassword);
+            $stmt->bind_param("sss", $name, $email, $pass);
 
             if ($stmt->execute()) {
                 header("Location: login1.php?signup_success=1");
@@ -80,6 +78,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $email = $_POST['signinemail'];
         $pass = $_POST['signinpassword'];
 
+        // Check credentials
         $signinQuery = "SELECT * FROM login WHERE email = ?";
         $stmt = $mysqli->prepare($signinQuery);
         $stmt->bind_param("s", $email);
@@ -89,7 +88,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if ($result->num_rows > 0) {
             $row = $result->fetch_assoc();
 
-            // Direct comparison of plain password
+            // Check password
             if ($pass === $row['password']) {
                 $_SESSION['user'] = $row['name'];
                 $_SESSION['email'] = $row['email']; // Store email for dropdown display
