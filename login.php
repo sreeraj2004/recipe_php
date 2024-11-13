@@ -3,9 +3,9 @@ session_start();
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $button = $_POST['login-btn'];
-    $username = "root";
-    $password = "";
-    $host = "localhost";
+    $username = "ub38owlpgxfekdsx";
+    $password = "q6csz92u28yqjycb";
+    $host = "irkm0xtlo2pcmvvz.chr7pe7iynqr.eu-west-1.rds.amazonaws.com";
     $database = "project";
 
     $conn = new mysqli($host, $username, $password, $database);

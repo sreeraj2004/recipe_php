@@ -1,10 +1,10 @@
 RewriteEngine On
 RewriteBase /
 
-# Redirect all requests to index.php except for existing files and directories
+# Route requests to index.php when visiting root URL
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^$ index.php [L]
 
-# Any other requests, such as login.html, will be routed as-is
+# Allow direct access to login.html
 RewriteRule ^login.html$ login.html [L]
