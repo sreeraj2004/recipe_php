@@ -33,7 +33,9 @@ session_start();
                 </div>
             </div>
         <?php else: ?>
-            <button class="btn" onclick="navigate()">Login</button>
+            <form action="login.html" method="post">
+                <button type="submit" class="btn">Login</button>
+            </form>
         <?php endif; ?>
         
         <div class="menu-icon" onclick="toggleMenu()">
@@ -224,9 +226,9 @@ session_start();
 
     <!-- javascrip -->
     <script>
-        function navigate() {
-            window.location.href = "login.html";
-        }
+        // function navigate() {
+        //     window.location.href = "login.html";
+        // }
 
         function toggleDropdown() {
             document.getElementById("dropdownMenu").classList.toggle("show");
