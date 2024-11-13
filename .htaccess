@@ -1,5 +1,13 @@
 <IfModule mod_rewrite.c>
     RewriteEngine on
-    RewriteCond %{REQUEST_URI} !^public
+
+    # Avoid redirecting requests to home.php
+    RewriteCond %{REQUEST_URI} !^/home.php
+
+    # Rewrite all other requests to public/ directory
+    RewriteCond %{REQUEST_URI} !^/public/
     RewriteRule ^(.*)$ public/$1 [L]
-</IfModule> 
+
+    # Serve home.php as the root
+    RewriteRule ^$ home.php [L]
+</IfModule>
