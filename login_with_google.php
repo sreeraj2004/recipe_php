@@ -9,11 +9,11 @@ $dotenv = Dotenv::createImmutable(__DIR__);
 $dotenv->load();
 
 // Database credentials
-$username = "avnadmin";
-$server = "mysql-32792ed8-sreerajmutha-01b8.d.aivencloud.com";
-$password = "AVNS_4NXT9Kevg9jAQuVubwG";  // Replace with actual password
-$dbname = "defaultdb";
-$port = 20576;
+$username = $_ENV['username'];
+$server = $_ENV['server'];
+$password = $_ENV['password'];  // Replace with actual password
+$dbname = $_ENV['dbname'];
+$port = $_ENV['port'];
 
 // Create database connection
 $conc = mysqli_connect($server, $username, $password, $dbname, $port);

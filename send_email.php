@@ -6,7 +6,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $imgId = $data['imageId'];
     $to = $_SESSION['email']; 
     $subject = "Image Clicked";
-
     $ingredients = '';
     $process = '';
     $firstline = '';

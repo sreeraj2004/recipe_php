@@ -5,11 +5,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $button = $_POST['login-btn'];
 
     // Aiven MySQL credentials
-    $host = "mysql-32792ed8-sreerajmutha-01b8.d.aivencloud.com";
-    $port = 20576;
-    $username = "avnadmin";
-    $password = "AVNS_4NXT9Kevg9jAQuVubwG";  // Replace with actual password
-    $database = "defaultdb";
+    $username = $_ENV['username'];
+    $server = $_ENV['server'];
+    $password = $_ENV['password'];  // Replace with actual password
+    $dbname = $_ENV['dbname'];
+    $port = $_ENV['port'];
 
     // Create MySQL connection with SSL
     $mysqli = new mysqli(
