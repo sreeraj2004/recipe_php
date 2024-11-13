@@ -337,7 +337,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     ";
 
     $headers = "From: sreerajmutha@gmail.com" . "\r\n" .
-               "Reply-To: Sreerajmutha@gmail.com" . "\r\n" .
+               "Reply-To: sreerajmutha@gmail.com" . "\r\n" .
                "X-Mailer: PHP/" . phpversion();
 
     if (mail($to, $subject, $message, $headers)) {
