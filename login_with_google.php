@@ -2,11 +2,7 @@
 session_start();
 require __DIR__ . '/vendor/autoload.php';
 
-use Dotenv\Dotenv;
 
-// Load .env variables
-$dotenv = Dotenv::createImmutable(__DIR__);
-$dotenv->load();
 
 // Database credentials
 $username = $_ENV['username'];
